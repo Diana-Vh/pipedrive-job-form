@@ -29,7 +29,7 @@ document.getElementById("submit-btn").addEventListener("click", async () => {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        title: Job from ${jobData.client_name},
+        title: `Job from ${jobData.client_name}`,
         value: 0,
         currency: "USD",
         status: "open",
@@ -41,14 +41,14 @@ document.getElementById("submit-btn").addEventListener("click", async () => {
     const result = await response.json();
 
     if (response.ok && result.success) {
-      document.getElementById("status-msg").textContent = Deal created! ID: ${result.data.id};
+      document.getElementById("status-msg").textContent = `Deal created! ID: ${result.data.id}`;
       document.getElementById("status-msg").style.color = "green";
 
-      // Получаем ссылку из API или формируем вручную
+      // Получаем ссылку из API 
       const dealId = result.data.id;
       let dealUrl = result.data.url
         ? result.data.url
-        : https://${pipedriveSubdomain}.pipedrive.com/deal/${dealId};
+        : `https://${pipedriveSubdomain}.pipedrive.com/deal/${dealId}`;
 
       document.getElementById("view-deal-link").href = dealUrl;
       document.getElementById("deal-links").style.display = "block";
@@ -78,7 +78,7 @@ Technician: ${jobData.technician}
     }
   } catch (error) {
     console.error("Error:", error);
-    document.getElementById("status-msg").textContent = Error: ${error.message};
+    document.getElementById("status-msg").textContent = `Error: ${error.message}`;
     document.getElementById("status-msg").style.color = "red";
   }
 });
