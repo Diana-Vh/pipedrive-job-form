@@ -1,121 +1,44 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Create Job Form</title>
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    background: #f4f4f4;
-    margin: 0; padding: 20px;
-  }
-  .container {
-    max-width: 600px;
-    background: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-    margin: auto;
-  }
-  h1 {
-    margin-top: 0;
-  }
-  label {
-    display: block;
-    margin-top: 15px;
-  }
-  input, textarea, select {
-    width: 100%;
-    padding: 8px;
-    margin-top: 6px;
-    box-sizing: border-box;
-  }
-  button {
-    margin-top: 20px;
-    padding: 12px 25px;
-    background-color: #0052cc;
-    border: none;
-    color: white;
-    cursor: pointer;
-    font-weight: bold;
-    border-radius: 4px;
-  }
-  button:disabled {
-    background: #aaa;
-    cursor: not-allowed;
-  }
-  .status {
-    margin-top: 20px;
-    font-weight: bold;
-  }
-  .links {
-    margin-top: 15px;
-  }
-  .links a {
-    margin-right: 15px;
-    color: #0052cc;
-    text-decoration: none;
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Create Job Form - Pipedrive</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 600px; margin: 2rem auto; padding: 1rem; }
+    input, textarea, button { display: block; width: 100%; margin-bottom: 1rem; padding: 0.5rem; font-size: 1rem; }
+    #status { margin-bottom: 1rem; font-weight: bold; }
+    #links { margin-top: 1rem; }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Create Job</h1>
-    <form id="jobForm">
-      <label>Client Name
-        <input type="text" id="client_name" required />
-      </label>
-      <label>Client Phone
-        <input type="tel" id="client_phone" />
-      </label>
-      <label>Client Email
-        <input type="email" id="client_email" />
-      </label>
-      <label>Job Type
-        <input type="text" id="job_type" />
-      </label>
-      <label>Job Source
-        <input type="text" id="job_source" />
-      </label>
-      <label>Description
-        <textarea id="job_description"></textarea>
-      </label>
-      <label>Address
-        <input type="text" id="address" />
-      </label>
-      <label>City
-        <input type="text" id="city" />
-      </label>
-      <label>State
-        <input type="text" id="state" />
-      </label>
-      <label>Zip
-        <input type="text" id="zip" />
-      </label>
-      <label>Date
-        <input type="date" id="date" />
-      </label>
-      <label>Start Time
-        <input type="time" id="start_time" />
-      </label>
-      <label>End Time
-        <input type="time" id="end_time" />
-      </label>
-      <label>Technician
-        <input type="text" id="technician" />
-      </label>
 
-      <button type="submit" id="submitBtn">Create Deal</button>
-    </form>
+<h1>Создать сделку (Job) в Pipedrive</h1>
 
-    <div class="status" id="status"></div>
-    <div class="links" id="links" style="display:none;">
-      <a href="#" id="viewDealLink" target="_blank">View Deal</a>
-      <a href="#" id="newJobLink" target="_blank">Create Another Job</a>
-    </div>
-  </div>
+<form id="jobForm">
+  <input name="client_name" placeholder="Имя клиента" required />
+  <input name="client_phone" placeholder="Телефон" required />
+  <input name="client_email" placeholder="Email" type="email" required />
+  <input name="job_type" placeholder="Тип работы" required />
+  <input name="job_source" placeholder="Источник" required />
+  <textarea name="job_description" placeholder="Описание работы" required></textarea>
+  <input name="address" placeholder="Адрес" required />
+  <input name="city" placeholder="Город" required />
+  <input name="state" placeholder="Область / Регион" required />
+  <input name="zip" placeholder="Почтовый индекс" required />
+  <input name="date" type="date" required />
+  <input name="start_time" type="time" required />
+  <input name="end_time" type="time" required />
+  <input name="technician" placeholder="Техник" required />
+  <button id="submitBtn" type="submit">Создать сделку</button>
+</form>
 
-  <script src="app.js"></script>
+<div id="status"></div>
+
+<div id="links" style="display:none;">
+  <a id="viewDealLink" href="#" target="_blank">Посмотреть созданную сделку в Pipedrive</a>
+</div>
+
+<script src="script.js"></script>
 </body>
-</html>
+</html></html>
