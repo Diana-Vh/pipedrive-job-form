@@ -33,7 +33,6 @@ document.getElementById("submit-btn").addEventListener("click", async () => {
         currency: "USD",
         status: "open",
         visible_to: 3,
-        
         add_time: new Date().toISOString()
       })
     });
@@ -45,6 +44,11 @@ document.getElementById("submit-btn").addEventListener("click", async () => {
       document.getElementById("status-msg").style.color = "green";
 
       
+      const dealId = result.data.id;
+      const dealUrl = `https://app.pipedrive.com/deal/${dealId}`;
+      document.getElementById("view-deal-link").href = dealUrl;
+      document.getElementById("deal-links").style.display = "block";
+
       const noteText = `
 Client: ${jobData.client_name}, ${jobData.client_phone}, ${jobData.client_email}
 Job: ${jobData.job_type} from ${jobData.job_source}
@@ -61,7 +65,7 @@ Technician: ${jobData.technician}
         },
         body: JSON.stringify({
           content: noteText,
-          deal_id: result.data.id
+          deal_id: dealId
         })
       });
 
