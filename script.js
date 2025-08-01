@@ -1,84 +1,111 @@
-document.getElementById("submit-btn").addEventListener("click", async () => {
-  const jobData = {
-    client_name: document.getElementById("client-name").value,
-    client_phone: document.getElementById("client-phone").value,
-    client_email: document.getElementById("client-email").value,
 
-    job_type: document.getElementById("job-type").value,
-    job_source: document.getElementById("job-source").value,
-    description: document.getElementById("job-description").value,
+const API_TOKEN = "e25d77c4d26978ab3efc9d48a52b369d75574399";
+const COMPANY_DOMAIN = "ty-sandbox"; 
 
-    address: document.getElementById("address").value,
-    city: document.getElementById("city").value,
-    state: document.getElementById("state").value,
-    zip: document.getElementById("zip").value,
+// Отображение статуса
+function setStatus(message, color = "black") {
+  const statusEl = document.getElementById("status");
+  statusEl.textContent = message;
+  statusEl.style.color = color;
+}
 
-    date: document.getElementById("job-date").value,
-    start_time: document.getElementById("start-time").value,
-    end_time: document.getElementById("end-time").value,
-    technician: document.getElementById("technician").value,
+// Создаём сделку через Pipedrive API
+async function createDeal(data) {
+  const dealData = {
+    title: `Заявка от ${data.client_name} - ${data.job_type}`,
+    person_id: 0, // Можно добавить логику поиска или создания контакта, сейчас 0 - без контакта
+    visible_to: "3", // Все пользователи компании
+    // Добавим кастомные поля, если есть
+    "43f23735a8a7d9a0e3d7": data.client_phone, // Пример ID кастомного поля - Заменить на свои
+    "1234567890abcdef": data.client_email, // Пример email, заменить ID на свой
+    // Другие поля по API, если нужны
   };
 
-  const apiToken = "74a4f72f8063143d3b41b034e06f32b1816f957b"; 
-  const pipedriveSubdomain = "ty-sandbox"; // Твой поддомен
+  // основные поля в title, а остальные через заметку
+
+  const response = await fetch(
+    `https://${COMPANY_DOMAIN}.pipedrive.com/api/v1/deals?api_token=${API_TOKEN}`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(dealData),
+    }
+  );
+  const result = await response.json();
+  if (!result.success) {
+    throw new Error(result.error || "Ошибка при создании сделки");
+  }
+  return result.data.id;
+}
+
+// заметкf с описанием работы и деталями
+async function createNote(dealId, data) {
+  const noteContent = `
+Телефон: ${data.client_phone}
+Email: ${data.client_email}
+Источник: ${data.job_source}
+Описание: ${data.job_description}
+Адрес: ${data.address}, ${data.city}, ${data.state}, ${data.zip}
+Дата: ${data.date}
+Время: с ${data.start_time} до ${data.end_time}
+Техник: ${data.technician}
+  `.trim();
+
+  const response = await fetch(
+    `https://${COMPANY_DOMAIN}.pipedrive.com/api/v1/notes?api_token=${API_TOKEN}`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        content: noteContent,
+        deal_id: dealId,
+      }),
+    }
+  );
+  const result = await response.json();
+  if (!result.success) {
+    throw new Error(result.error || "Ошибка при создании заметки");
+  }
+  return result.data.id;
+}
+
+// Обработка отправки формы
+document.getElementById("jobForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const form = e.target;
+
+  const jobData = {
+    client_name: form.client_name.value.trim(),
+    client_phone: form.client_phone.value.trim(),
+    client_email: form.client_email.value.trim(),
+    job_type: form.job_type.value.trim(),
+    job_source: form.job_source.value.trim(),
+    job_description: form.job_description.value.trim(),
+    address: form.address.value.trim(),
+    city: form.city.value.trim(),
+    state: form.state.value.trim(),
+    zip: form.zip.value.trim(),
+    date: form.date.value,
+    start_time: form.start_time.value,
+    end_time: form.end_time.value,
+    technician: form.technician.value.trim(),
+  };
 
   try {
-    const response = await fetch(`https://api.pipedrive.com/v1/deals?api_token=${apiToken}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        title: `Job from ${jobData.client_name}`,
-        value: 0,
-        currency: "USD",
-        status: "open",
-        visible_to: 3,
-        add_time: new Date().toISOString()
-      })
-    });
+    document.getElementById("submitBtn").disabled = true;
+    setStatus("Создаём сделку...", "blue");
 
-    const result = await response.json();
+    const dealId = await createDeal(jobData);
+    await createNote(dealId, jobData);
 
-    if (response.ok && result.success) {
-      document.getElementById("status-msg").textContent = `Deal created! ID: ${result.data.id}`;
-      document.getElementById("status-msg").style.color = "green";
+    setStatus("Сделка успешно создана! ✅", "green");
 
-      // Получаем ссылку из API или формируем вручную
-      const dealId = result.data.id;
-      let dealUrl = result.data.url
-        ? result.data.url
-        : `https://${pipedriveSubdomain}.pipedrive.com/deal/${dealId}`;
-
-      document.getElementById("view-deal-link").href = dealUrl;
-      document.getElementById("deal-links").style.display = "block";
-
-      const noteText = `
-Client: ${jobData.client_name}, ${jobData.client_phone}, ${jobData.client_email}
-Job: ${jobData.job_type} from ${jobData.job_source}
-Description: ${jobData.description}
-Address: ${jobData.address}, ${jobData.city}, ${jobData.state}, ${jobData.zip}
-Scheduled: ${jobData.date} from ${jobData.start_time} to ${jobData.end_time}
-Technician: ${jobData.technician}
-      `;
-
-      await fetch(`https://api.pipedrive.com/v1/notes?api_token=${apiToken}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          content: noteText,
-          deal_id: dealId
-        })
-      });
-
-    } else {
-      throw new Error(result.error || "Failed to create deal");
-    }
+    const viewLink = document.getElementById("viewDealLink");
+    viewLink.href = `https://${COMPANY_DOMAIN}.pipedrive.com/deal/${dealId}`;
+    document.getElementById("links").style.display = "block";
   } catch (error) {
-    console.error("Error:", error);
-    document.getElementById("status-msg").textContent = `Error: ${error.message}`;
-    document.getElementById("status-msg").style.color = "red";
+    setStatus("Ошибка: " + error.message, "red");
+  } finally {
+    document.getElementById("submitBtn").disabled = false;
   }
 });
