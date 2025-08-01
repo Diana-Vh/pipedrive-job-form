@@ -1,68 +1,121 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Create Job</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
-  <style>
-    body { font-family: Arial, sans-serif; padding: 20px; background: #f4f4f4; }
-    .container { display: flex; flex-wrap: wrap; gap: 20px; }
-    .block { background: white; padding: 20px; border-radius: 8px; width: 45%; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-    .block h2 { margin-top: 0; }
-    label { display: block; margin-top: 10px; }
-    input, select, textarea { width: 100%; padding: 8px; margin-top: 5px; }
-    .buttons { margin-top: 20px; }
-    .buttons button { padding: 10px 20px; margin-right: 10px; }
-    .status { margin-top: 20px; font-weight: bold; color: green; }
-    #deal-links a { margin-left: 10px; }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Create Job Form</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #f4f4f4;
+    margin: 0; padding: 20px;
+  }
+  .container {
+    max-width: 600px;
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    margin: auto;
+  }
+  h1 {
+    margin-top: 0;
+  }
+  label {
+    display: block;
+    margin-top: 15px;
+  }
+  input, textarea, select {
+    width: 100%;
+    padding: 8px;
+    margin-top: 6px;
+    box-sizing: border-box;
+  }
+  button {
+    margin-top: 20px;
+    padding: 12px 25px;
+    background-color: #0052cc;
+    border: none;
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 4px;
+  }
+  button:disabled {
+    background: #aaa;
+    cursor: not-allowed;
+  }
+  .status {
+    margin-top: 20px;
+    font-weight: bold;
+  }
+  .links {
+    margin-top: 15px;
+  }
+  .links a {
+    margin-right: 15px;
+    color: #0052cc;
+    text-decoration: none;
+  }
+</style>
 </head>
 <body>
-  <h1>NEW Create a job</h1>
   <div class="container">
-    <div class="block">
-      <h2>Client details</h2>
-      <label>Name: <input type="text" id="client-name" /></label>
-      <label>Phone: <input type="text" id="client-phone" /></label>
-      <label>Email: <input type="text" id="client-email" /></label>
-    </div>
+    <h1>Create Job</h1>
+    <form id="jobForm">
+      <label>Client Name
+        <input type="text" id="client_name" required />
+      </label>
+      <label>Client Phone
+        <input type="tel" id="client_phone" />
+      </label>
+      <label>Client Email
+        <input type="email" id="client_email" />
+      </label>
+      <label>Job Type
+        <input type="text" id="job_type" />
+      </label>
+      <label>Job Source
+        <input type="text" id="job_source" />
+      </label>
+      <label>Description
+        <textarea id="job_description"></textarea>
+      </label>
+      <label>Address
+        <input type="text" id="address" />
+      </label>
+      <label>City
+        <input type="text" id="city" />
+      </label>
+      <label>State
+        <input type="text" id="state" />
+      </label>
+      <label>Zip
+        <input type="text" id="zip" />
+      </label>
+      <label>Date
+        <input type="date" id="date" />
+      </label>
+      <label>Start Time
+        <input type="time" id="start_time" />
+      </label>
+      <label>End Time
+        <input type="time" id="end_time" />
+      </label>
+      <label>Technician
+        <input type="text" id="technician" />
+      </label>
 
-    <div class="block">
-      <h2>Job type</h2>
-      <label>Job Type: <input type="text" id="job-type" /></label>
-      <label>Job Source: <input type="text" id="job-source" /></label>
-      <label>Description: <textarea id="job-description"></textarea></label>
-    </div>
+      <button type="submit" id="submitBtn">Create Deal</button>
+    </form>
 
-    <div class="block">
-      <h2>Service location</h2>
-      <label>Address: <input type="text" id="address" /></label>
-      <label>City: <input type="text" id="city" /></label>
-      <label>State: <input type="text" id="state" /></label>
-      <label>Zip: <input type="text" id="zip" /></label>
-      <label>Map (not active): <div style="background:#eee;height:60px;border:1px solid #ccc;text-align:center;line-height:60px;">Map Placeholder</div></label>
-    </div>
-
-    <div class="block">
-      <h2>Scheduled</h2>
-      <label>Date: <input type="date" id="job-date" /></label>
-      <label>Start Time: <input type="time" id="start-time" /></label>
-      <label>End Time: <input type="time" id="end-time" /></label>
-      <label>Technician: <input type="text" id="technician" /></label>
+    <div class="status" id="status"></div>
+    <div class="links" id="links" style="display:none;">
+      <a href="#" id="viewDealLink" target="_blank">View Deal</a>
+      <a href="#" id="newJobLink" target="_blank">Create Another Job</a>
     </div>
   </div>
 
-  <div class="buttons">
-    <button id="submit-btn">Save info</button>
-    <span class="status" id="status-msg"></span>
-
-    <div id="deal-links" style="margin-top: 20px; display: none;">
-      <button disabled>Сделка создана</button>
-      <a id="view-deal-link" href="#" target="_blank" style="padding: 10px 20px; background: #4CAF50; color: white; text-decoration: none; border-radius: 4px;">Посмотреть сделку</a>
-    </div>
-  </div>
-
-  <script src="script.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
