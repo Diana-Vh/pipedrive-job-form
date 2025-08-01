@@ -20,6 +20,7 @@ document.getElementById("submit-btn").addEventListener("click", async () => {
   };
 
   const apiToken = "74a4f72f8063143d3b41b034e06f32b1816f957b"; 
+  const pipedriveSubdomain = "ty-sandbox"; // Твой поддомен
 
   try {
     const response = await fetch(`https://api.pipedrive.com/v1/deals?api_token=${apiToken}`, {
@@ -43,9 +44,12 @@ document.getElementById("submit-btn").addEventListener("click", async () => {
       document.getElementById("status-msg").textContent = `Deal created! ID: ${result.data.id}`;
       document.getElementById("status-msg").style.color = "green";
 
-      
+      // Получаем ссылку из API или формируем вручную
       const dealId = result.data.id;
-      const dealUrl = `https://app.pipedrive.com/deal/${dealId}`;
+      let dealUrl = result.data.url
+        ? result.data.url
+        : `https://${pipedriveSubdomain}.pipedrive.com/deal/${dealId}`;
+
       document.getElementById("view-deal-link").href = dealUrl;
       document.getElementById("deal-links").style.display = "block";
 
